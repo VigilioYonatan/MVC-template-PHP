@@ -1,0 +1,14 @@
+{
+    "name": "vigilio/connect-db",
+    "require": {
+        "vlucas/phpdotenv": "^5.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Model\\": "./models",
+            "Controller\\": "./controllers",
+            "MC\\": "./",
+            "Library\\":"./libraries"
+        }
+    }
+}
