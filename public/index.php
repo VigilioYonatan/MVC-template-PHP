@@ -3,7 +3,7 @@
 require_once __DIR__ . '/../config/app.php';
 
 use Controller\UsuarioController;
-use MC\Router;
+use MVC\Router;
 
 
 $router = new Router;

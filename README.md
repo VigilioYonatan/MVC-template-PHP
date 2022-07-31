@@ -14,3 +14,7 @@
 2. Para ejecutar entrar en el directorio public y ejecutar **php -S localhost:4000 **<-puerto
 
 3. Y podras ejecutar el servidor [link](http://localhost:4000/)
+
+### Desarrollo
+1) npm run sass : Para ejecutar sass
+2) npm run gulp : Ejecutar bundler gulp

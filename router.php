@@ -1,6 +1,6 @@
 <?php
 
-namespace MC;
+namespace MVC;
 
 class Router
 {

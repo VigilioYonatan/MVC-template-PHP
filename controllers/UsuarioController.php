@@ -2,7 +2,7 @@
 
 namespace Controller;
 
-use MC\Router;
+use MVC\Router;
 use Model\UsuarioModel;
 
 class UsuarioController
