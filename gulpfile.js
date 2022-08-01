@@ -17,8 +17,8 @@ import avif from "gulp-avif";
 // javascript
 import terser from "gulp-terser-js";
 // implementos
-import "gulp-concat";
-import "gulp-rename";
+import concat from "gulp-concat";
+import rename from "gulp-rename";
 import notify from "gulp-notify";
 import "gulp-clean";
 
@@ -39,9 +39,12 @@ const css = () => {
 // javascript
 const javascript = () => {
     return src(paths.js)
+         .pipe(sourcemaps.init())
+        .pipe(concat("bundle.js")) // final output file name
         .pipe(terser())
         .pipe(sourcemaps.write("."))
-        .pipe(dest("public/build/js"));
+        .pipe(rename({ suffix: ".min" }))
+        .pipe(dest("./public/build/js"));
 };
 
 // convierte a webp
