@@ -2,24 +2,25 @@
 
 namespace Controller;
 
-use MVC\Router;
-use Model\UsuarioModel;
+use App\Request;
+use App\Response;
+use App\Router;
 
 class UsuarioController
 {
+
     public static function addUser()
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $newUser = new UsuarioModel($_POST);
-            $newUser->addUserValidate();
-            $newUser->guardar();
-            echo json_encode($newUser);
+        if (request() === 'GET') {
+            statusCode(400);
+            echo json_encode("hola");
         }
     }
     public static function home(Router $router)
     {
+
         $router->render("web/home", [
-            "title" => "hola mundo"
+            "var" => "hola mundo"
         ]);
     }
 }

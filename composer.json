@@ -7,8 +7,9 @@
         "psr-4": {
             "Model\\": "./models",
             "Controller\\": "./controllers",
-            "MVC\\": "./",
-            "Library\\":"./libraries"
+            "Library\\": "./libraries",
+            "App\\": "./app"
+            
         }
     }
 }

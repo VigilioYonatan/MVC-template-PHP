@@ -2,25 +2,30 @@
 
 namespace Model;
 
-use Model\ActiveRecord;
+use App\ActiveRecord;
 
 class UsuarioModel extends ActiveRecord
 {
-    protected static $tabla = 'usuario';
-    protected static $columnasDB = ['id', 'nombre', 'email', 'password', 'rol_id'];
+    protected static $tabla = 'users';
+    protected static $columnasDB = ['id', 'email', 'firstname', 'lastname', 'status', 'created_at', 'password', 'confirmPassword'];
 
     public function __construct($args = [])
     {
         $this->id       = $args['id'] ?? null;
-        $this->nombre   = $args['nombre'] ?? null;
-        $this->email    = $args['email'] ?? null;
-        $this->password = $args['password'] ?? null;
-        $this->rol_id   = $args['rol_id'] ?? 1;
+        $this->email   = $args['email'] ?? '';
+        $this->firstname    = $args['firstname'] ?? '';
+        $this->lastname = $args['lastname'] ?? '';
+        $this->status  = $args['status'] ?? 1;
+        $this->created_at  = $args['created_at'] ?? '';
+        $this->password  = $args['password'] ?? '';
+        $this->confirmPassword  = $args['confirmPassword'] ?? '';
     }
 
-    public function addUserValidate()
+    public function rules(): array
     {
-        $validacion = new Middlewares;
-     
+        return [
+            "email" => [self::RULE_REQUIRED, self::RULE_EMAIL, [self::RULE_UNIQUE, 'class' => self::class]],
+            "password" => [self::RULE_REQUIRED, [self::RULE_MIN, 'min' => 8], [self::RULE_MAX, 'max' => 24]],
+        ];
     }
 }
