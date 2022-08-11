@@ -37,17 +37,20 @@ class Router
             echo "Página No Encontrada o Ruta no válida";
         }
     }
-    public function render($view, $datos = [])
+    public function render(string $layout, $view, $datos = [])
     {
         // Leer lo que le pasamos  a la vista
         foreach ($datos as $key => $value) {
             $$key = $value;  // Doble signo de dolar significa: variable variable, básicamente nuestra variable sigue siendo la original, pero al asignarla a otra no la reescribe, mantiene su valor, de esta forma el nombre de la variable se asigna dinamicamente
         }
-
         ob_start(); // Almacenamiento en memoria durante un momento...
         // entonces incluimos la vista en el layout
+        // $contenido = ob_get_clean(); // Limpia el Buffer
+        // echo ob_get_clean();
         include_once __DIR__ . "/../views/$view.php";
-        $contenido = ob_get_clean(); // Limpia el Buffer
+        $layoutContent = ob_get_clean();
+        include_once __DIR__ . "/../views/layouts/$layout.php";
+        $contenido = ob_get_clean();
         include_once __DIR__ . '/../views/layout.php';
     }
 }

@@ -19,7 +19,8 @@ class UsuarioController
     public static function home(Router $router)
     {
 
-        $router->render("web/home", [
+        $router->render("webLayout", "web/home", [
+            "title" => 'inicioPage',
             "var" => "hola mundo"
         ]);
     }

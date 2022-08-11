@@ -2,6 +2,12 @@
 
 namespace App;
 
+// *example to api
+// $newUser = new UsuarioModel($_POST);
+// // validaciones 
+// $newUser->registerValidate();
+// $newUser->validate();
+// $newUser->getErrorAPI();
 
 abstract class Validaciones
 {
@@ -13,14 +19,16 @@ abstract class Validaciones
     public const RULE_MATCH = 'match';
     public const RULE_UNIQUE = 'unique';
 
-    public function rules(): array
+    protected $rules;
+
+    protected function rules(array $rules)
     {
-        return [];
+        $this->rules = $rules;
     }
 
     public function validate()
     {
-        foreach ($this->rules() as $attribute => $rules) {
+        foreach ($this->rules as $attribute => $rules) {
             $value = $this->{$attribute};
 
             foreach ($rules as  $rule) {
@@ -77,10 +85,10 @@ abstract class Validaciones
         return [
             self::RULE_REQUIRED => 'Este campo es obligatorio',
             self::RULE_EMAIL => 'Este campo debe ser un email válido',
-            self::RULE_MIN => 'Campo debe ser mínimo de {min}',
+            self::RULE_MIN => 'Campo debe ser minimo de {min}',
             self::RULE_MAX => 'Campo debe ser maximo {max}',
             self::RULE_MATCH => 'Este campo DEBE SER el mismo como {match}',
-            self::RULE_UNIQUE => 'Record with this {field} ya existe'
+            self::RULE_UNIQUE => 'Este {field} ya existe en nuestro sistema'
         ];
     }
 
@@ -97,10 +105,14 @@ abstract class Validaciones
         $errors = $this->errors[$attribute] ?? [];
         return $errors[0] ?? '';
     }
-    public function getFirstErrorAPI($attribute)
+    public function getErrorAPI()
     {
-        statusCode(400);
-        $errors = $this->errors[$attribute] ?? [];
-        return $errors[0] ?? '';
+        if (!empty($this->errors)) {
+            foreach ($this->errors as $key => $value) {
+                statusCode(400);
+                echo json_encode([$key => $value[0]]);
+                die;
+            }
+        }
     }
 }
