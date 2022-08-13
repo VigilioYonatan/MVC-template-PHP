@@ -2,12 +2,12 @@
 
 namespace Controller;
 
-use App\Request;
-use App\Response;
 use App\Router;
+use Model\UsuarioModel;
 
 class UsuarioController
 {
+
 
     public static function addUser()
     {
@@ -18,10 +18,62 @@ class UsuarioController
     }
     public static function home(Router $router)
     {
+        if (isset($_GET['eliminar'])) {
+            $eliminar = new UsuarioModel();
+            $eliminar->id = cleanHtml($_GET['eliminar']);
+            $eliminado = $eliminar->eliminar();
+            if ($eliminado) {
+                echo 'Eliminado';
+            } else {
+                header('Location: /');
+            }
+        }
+
+
+        if (request() === 'POST') {
+            $newUser = new UsuarioModel($_POST);
+            $newUser->validacionAddUser();
+            if ($newUser->validate()) {
+                $resultado = $newUser->guardar();
+                debuguear($resultado);
+            }
+        }
+        $users = UsuarioModel::all();
 
         $router->render("webLayout", "web/home", [
             "title" => 'inicioPage',
-            "var" => "hola mundo"
+            "user" => $newUser ?? null,
+            "users" => $users
+        ]);
+    }
+    public static function editar(Router $router)
+    {
+        $id = $_GET['id'];
+        $user = UsuarioModel::find($id);
+
+        if (request() === 'POST') {
+
+            debuguear($_POST);
+            $args = $_POST['usuario'];
+            $user->sincronizar($args);
+
+            $user->sanitizarAtributos();
+            $user->validacionEditUser();
+            debuguear($user);
+
+            if ($user->validate()) {
+                $resultado = $user->guardar();
+                if ($resultado) {
+                    header('Location: /');
+                }
+            }
+        }
+
+
+        $router->render("webLayout", "web/editar", [
+            "title" => 'Editar Page',
+            "user" => $user
+
         ]);
     }
 }

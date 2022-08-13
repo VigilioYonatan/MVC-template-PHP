@@ -49,6 +49,10 @@ abstract class ActiveRecord extends Validaciones
     {
         self::$db = null;
     }
+    public function executer(string $str)
+    {
+        return substr(self::$db->quote($str), 1, -1);
+    }
 
 
 
@@ -70,7 +74,7 @@ abstract class ActiveRecord extends Validaciones
         $sanitizado = [];
         foreach ($atributos as $key => $value) {
 
-            $sanitizado[$key] = self::$db->quote($value);
+            $sanitizado[$key] = $value;
         }
         return $sanitizado;
     }
@@ -102,7 +106,7 @@ abstract class ActiveRecord extends Validaciones
     // Todos los registros
     public static function all()
     {
-        $query = "SELECT * FROM " . static::$tabla;
+        $query = "SELECT * FROM " . static::$tabla . "";
         $resultado = self::consultarSQL($query);
         return $resultado;
     }
@@ -138,16 +142,20 @@ abstract class ActiveRecord extends Validaciones
         // Sanitizar los datos
         $atributos = $this->sanitizarAtributos();
 
-        // Insertar en la base de datos
-        $query = " INSERT INTO " . static::$tabla . " ( ";
-        $query .= join(', ', array_keys($atributos));
-        $query .= " ) VALUES (";
-        $query .= join(", ", array_values($atributos));
-        $query .= ") ";
+        $query2 = " INSERT INTO " . static::$tabla . " ( ";
+        $query2 .= join(', ', array_keys($atributos));
+        $query2 .= " ) VALUES (";
+        $query2 .= substr(str_repeat('?,', count(array_keys($atributos))), 0, -1);
+        $query2 .= ") ";
+
+        // preparar 
+        $stmt = self::$db->prepare($query2);
+
+        // eejecutar
+        $resultado = $stmt->execute(array_values($atributos));
+
         // Resultado de la consulta
 
-
-        $resultado = self::$db->exec($query);
         return [
             'resultado' =>  $resultado,
             'id' => self::$db->lastInsertId()
@@ -163,19 +171,19 @@ abstract class ActiveRecord extends Validaciones
         // Iterar para ir agregando cada campo de la BD
         $valores = [];
         foreach ($atributos as $key => $value) {
-            $valores[] = "{$key}={$value}";
+            $valores[] = "$key = ?";
         }
 
         // Consulta SQL
         $query = "UPDATE " . static::$tabla . " SET ";
-        $query .=  join(', ', $valores);
+        $query .= join(', ', $valores);
         $query .= " WHERE id = " . self::$db->quote($this->id) . " ";
-        $query .= " LIMIT 1 ";
+        // mysql $query .= "LIMIT 1;";
 
-        // Actualizar BD
+        // preparar BD
         $stmt = self::$db->prepare($query);
-
-        $resultado = $stmt->execute();
+        // ejecutar 
+        $resultado = $stmt->execute(array_values($atributos));
 
         return  $resultado;
     }
@@ -183,9 +191,10 @@ abstract class ActiveRecord extends Validaciones
     // Eliminar un Registro por su ID
     public function eliminar()
     {
-        $query = "DELETE FROM "  . static::$tabla . " WHERE id = " . self::$db->quote($this->id) . " LIMIT 1";
-        $resultado = self::$db->exec($query);
-        return $resultado;
+        $query = "DELETE FROM "  . static::$tabla . " WHERE id = ? ";
+        $stmt = self::$db->prepare($query);
+        $resultado = $stmt->execute([$this->executer($this->id)]);
+        return $resultado === 1;
     }
 
     public function buscador($columna, $buscar)

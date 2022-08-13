@@ -17,11 +17,10 @@ class DB
         $this->PASS =  $_ENV['DB_PASS'];
         $this->DB =    $_ENV['DB_NAME'];
         $this->pdo = new PDO(
-            "mysql:host=$this->HOST;dbname=$this->DB",
+            "pgsql:host=$this->HOST;dbname=$this->DB",
             $this->USER,
             $this->PASS
         );
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
-
 }

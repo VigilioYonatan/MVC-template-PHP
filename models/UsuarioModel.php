@@ -6,26 +6,35 @@ use App\ActiveRecord;
 
 class UsuarioModel extends ActiveRecord
 {
-    protected static $tabla = 'users';
-    protected static $columnasDB = ['id', 'email', 'firstname', 'lastname', 'status', 'created_at', 'password', 'confirmPassword'];
+    protected static $tabla = 'usuario';
+    protected static $columnasDB = ['id', 'nombre', 'email', 'password'];
 
     public function __construct($args = [])
     {
         $this->id       = $args['id'] ?? null;
+        $this->nombre   = $args['nombre'] ?? '';
         $this->email   = $args['email'] ?? '';
-        $this->firstname    = $args['firstname'] ?? '';
-        $this->lastname = $args['lastname'] ?? '';
-        $this->status  = $args['status'] ?? 1;
-        $this->created_at  = $args['created_at'] ?? '';
-        $this->password  = $args['password'] ?? '';
-        $this->confirmPassword  = $args['confirmPassword'] ?? '';
+        $this->password   = $args['password'] ?? '';
     }
 
-    public function rules(): array
+    public function validacionAddUser(): void
     {
-        return [
+        $validacion = [
+            "nombre" => [self::RULE_REQUIRED, [self::RULE_MIN, 'min' => 3], [self::RULE_MAX, 'max' => 24]],
             "email" => [self::RULE_REQUIRED, self::RULE_EMAIL, [self::RULE_UNIQUE, 'class' => self::class]],
-            "password" => [self::RULE_REQUIRED, [self::RULE_MIN, 'min' => 8], [self::RULE_MAX, 'max' => 24]],
+            "password" => [self::RULE_REQUIRED, [self::RULE_MIN, 'min' => 5], [self::RULE_MAX, 'max' => 24]],
         ];
+
+        $this->rules($validacion);
+    }
+    public function validacionEditUser(): void
+    {
+        $validacion = [
+            "nombre" => [self::RULE_REQUIRED, [self::RULE_MIN, 'min' => 3], [self::RULE_MAX, 'max' => 24]],
+            "email" => [self::RULE_REQUIRED, self::RULE_EMAIL],
+            "password" => [self::RULE_REQUIRED, [self::RULE_MIN, 'min' => 5], [self::RULE_MAX, 'max' => 24]],
+        ];
+
+        $this->rules($validacion);
     }
 }
