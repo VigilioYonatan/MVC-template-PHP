@@ -37,7 +37,7 @@ class Router
             echo "Página No Encontrada o Ruta no válida";
         }
     }
-    public function render(string $layout, $view, $datos = [])
+    public function render( $view, $datos = [])
     {
         // Leer lo que le pasamos  a la vista
         foreach ($datos as $key => $value) {
@@ -48,8 +48,6 @@ class Router
         // $contenido = ob_get_clean(); // Limpia el Buffer
         // echo ob_get_clean();
         include_once __DIR__ . "/../views/$view.php";
-        $layoutContent = ob_get_clean();
-        include_once __DIR__ . "/../views/layouts/$layout.php";
         $contenido = ob_get_clean();
         include_once __DIR__ . '/../views/layout.php';
     }

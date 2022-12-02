@@ -17,7 +17,7 @@ class DB
         $this->PASS =  $_ENV['DB_PASS'];
         $this->DB =    $_ENV['DB_NAME'];
         $this->pdo = new PDO(
-            "pgsql:host=$this->HOST;dbname=$this->DB",
+            "mysql:host=$this->HOST;dbname=$this->DB",
             $this->USER,
             $this->PASS
         );
